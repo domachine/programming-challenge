@@ -1,7 +1,6 @@
 package de.exxcellent.challenge.weather;
 
 import java.io.IOException;
-import java.util.List;
 
 enum WeatherDataHeader {
     name, mxt, mnt
@@ -22,16 +21,10 @@ public class WeatherAnalyzer {
      * @throws IOException
      */
     public Day getDayWithSmallestTempSpread() throws IOException {
-        List<Day> days = reader.readWeatherData();
-
-        Day dayWithSmallestTempSpread = null;
-        int min = Integer.MAX_VALUE;
-        for (Day day : days) {
-            if (day.getTemperatureSpread() < min) {
-                min = day.getTemperatureSpread();
-                dayWithSmallestTempSpread = day;
-            }
-        }
-        return dayWithSmallestTempSpread;
+        return reader.readWeatherData().stream().reduce(
+                null,
+                (minDay, day) -> minDay == null || day.getTemperatureSpread() < minDay.getTemperatureSpread()
+                        ? day
+                        : minDay);
     }
 }

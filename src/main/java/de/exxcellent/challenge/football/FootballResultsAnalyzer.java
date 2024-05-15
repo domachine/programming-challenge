@@ -19,14 +19,11 @@ public class FootballResultsAnalyzer {
      */
     public FootballResult getFootballResultWithSmallestGoalDifference() throws IOException {
         List<FootballResult> footballData = reader.readFootballData();
-        FootballResult resultWithSmallestDistance = null;
-        int min = Integer.MAX_VALUE;
-        for (FootballResult result : footballData) {
-            if (result.getDistance() < min) {
-                min = result.getDistance();
-                resultWithSmallestDistance = result;
-            }
-        }
-        return resultWithSmallestDistance;
+
+        return footballData.stream().reduce(
+                null,
+                (minResult, result) -> minResult == null || result.getDistance() < minResult.getDistance()
+                        ? result
+                        : minResult);
     }
 }
