@@ -9,6 +9,11 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
+import de.exxcellent.challenge.football.FootballResult;
+import de.exxcellent.challenge.football.FootballResultsAnalyzer;
+import de.exxcellent.challenge.weather.Day;
+import de.exxcellent.challenge.weather.WeatherAnalyzer;
+
 /**
  * Example JUnit 5 test case.
  * 
@@ -21,8 +26,11 @@ class AppTest {
                 new WeatherTestCase("weather.csv", 14),
                 new WeatherTestCase("weather_sample_2.csv", 2));
 
+        WeatherAnalyzer analyzer = new WeatherAnalyzer();
+
         return testCases.stream().map(testCase -> DynamicTest.dynamicTest(testCase.getFile(), () -> {
-            Day day = App.getDayWithSmallestTempSpread(App.readWeatherData(testCase.getFile()));
+            Day day = analyzer.getDayWithSmallestTempSpread(
+                    analyzer.readWeatherData(App.class.getResourceAsStream(testCase.getFile())));
             assertEquals(testCase.getExpected(), day.getNumber());
         }));
     }
@@ -33,9 +41,12 @@ class AppTest {
                 new FootballTestCase("football.csv", "Aston_Villa"),
                 new FootballTestCase("football_sample_2.csv", "Liverpool"));
 
+        FootballResultsAnalyzer analyzer = new FootballResultsAnalyzer();
+
         return testCases.stream().map(testCase -> DynamicTest.dynamicTest(testCase.getFile(), () -> {
-            FootballResult result = App
-                    .getFootballResultWithSmallestGoalDifference(App.readFootballData(testCase.getFile()));
+            FootballResult result = analyzer
+                    .getFootballResultWithSmallestGoalDifference(
+                            analyzer.readFootballData(App.class.getResourceAsStream(testCase.getFile())));
             assertEquals(testCase.getExpected(), result.getTeam());
         }));
     }
