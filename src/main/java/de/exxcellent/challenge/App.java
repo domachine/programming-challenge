@@ -1,11 +1,11 @@
 package de.exxcellent.challenge;
 
-import java.util.List;
-
+import de.exxcellent.challenge.football.FootballCsvReader;
 import de.exxcellent.challenge.football.FootballResult;
 import de.exxcellent.challenge.football.FootballResultsAnalyzer;
 import de.exxcellent.challenge.weather.Day;
 import de.exxcellent.challenge.weather.WeatherAnalyzer;
+import de.exxcellent.challenge.weather.WeatherCsvReader;
 
 /**
  * The entry class for your solution. This class is only aimed as starting point
@@ -26,15 +26,15 @@ public final class App {
             throw new Exception("invalid number of arguments");
         }
         if (args[0].equals("--weather")) {
-            WeatherAnalyzer analyzer = new WeatherAnalyzer();
-            List<Day> weatherData = analyzer.readWeatherData(App.class.getResourceAsStream(args[1]));
-            Day dayWithSmallestTempSpread = analyzer.getDayWithSmallestTempSpread(weatherData);
+            WeatherAnalyzer analyzer = new WeatherAnalyzer(
+                    new WeatherCsvReader(App.class.getResourceAsStream(args[1])));
+            Day dayWithSmallestTempSpread = analyzer.getDayWithSmallestTempSpread();
             System.out.printf("Day with smallest temperature spread : %s%n", dayWithSmallestTempSpread.getNumber());
         } else if (args[0].equals("--football")) {
-            FootballResultsAnalyzer analyzer = new FootballResultsAnalyzer();
-            List<FootballResult> footballResults = analyzer.readFootballData(App.class.getResourceAsStream(args[1]));
-            FootballResult footballResultWithSmallestGoalSpread = analyzer.getFootballResultWithSmallestGoalDifference(
-                    footballResults);
+            FootballResultsAnalyzer analyzer = new FootballResultsAnalyzer(
+                    new FootballCsvReader(App.class.getResourceAsStream(args[1])));
+            FootballResult footballResultWithSmallestGoalSpread = analyzer
+                    .getFootballResultWithSmallestGoalDifference();
             System.out.printf("Team with smallest goal spread       : %s%n",
                     footballResultWithSmallestGoalSpread.getTeam());
         } else {

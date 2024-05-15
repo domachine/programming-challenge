@@ -9,8 +9,10 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
+import de.exxcellent.challenge.football.FootballCsvReader;
 import de.exxcellent.challenge.football.FootballResult;
 import de.exxcellent.challenge.football.FootballResultsAnalyzer;
+import de.exxcellent.challenge.weather.WeatherCsvReader;
 import de.exxcellent.challenge.weather.Day;
 import de.exxcellent.challenge.weather.WeatherAnalyzer;
 
@@ -26,11 +28,10 @@ class AppTest {
                 new WeatherTestCase("weather.csv", 14),
                 new WeatherTestCase("weather_sample_2.csv", 2));
 
-        WeatherAnalyzer analyzer = new WeatherAnalyzer();
-
         return testCases.stream().map(testCase -> DynamicTest.dynamicTest(testCase.getFile(), () -> {
-            Day day = analyzer.getDayWithSmallestTempSpread(
-                    analyzer.readWeatherData(App.class.getResourceAsStream(testCase.getFile())));
+            WeatherAnalyzer analyzer = new WeatherAnalyzer(
+                    new WeatherCsvReader(App.class.getResourceAsStream(testCase.getFile())));
+            Day day = analyzer.getDayWithSmallestTempSpread();
             assertEquals(testCase.getExpected(), day.getNumber());
         }));
     }
@@ -41,12 +42,10 @@ class AppTest {
                 new FootballTestCase("football.csv", "Aston_Villa"),
                 new FootballTestCase("football_sample_2.csv", "Liverpool"));
 
-        FootballResultsAnalyzer analyzer = new FootballResultsAnalyzer();
-
         return testCases.stream().map(testCase -> DynamicTest.dynamicTest(testCase.getFile(), () -> {
-            FootballResult result = analyzer
-                    .getFootballResultWithSmallestGoalDifference(
-                            analyzer.readFootballData(App.class.getResourceAsStream(testCase.getFile())));
+            FootballResultsAnalyzer analyzer = new FootballResultsAnalyzer(
+                    new FootballCsvReader(App.class.getResourceAsStream(testCase.getFile())));
+            FootballResult result = analyzer.getFootballResultWithSmallestGoalDifference();
             assertEquals(testCase.getExpected(), result.getTeam());
         }));
     }
