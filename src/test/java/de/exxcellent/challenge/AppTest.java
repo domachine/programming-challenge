@@ -16,20 +16,34 @@ import org.junit.jupiter.api.TestFactory;
  */
 class AppTest {
     @TestFactory
-    Stream<DynamicTest> weatherCsvTests2() {
+    Stream<DynamicTest> weatherCsvTests() {
         List<WeatherTestCase> testCases = Arrays.asList(
-                new WeatherTestCase("weather.csv", "14"),
-                new WeatherTestCase("weather_sample_2.csv", "2"));
+                new WeatherTestCase("weather.csv", 14),
+                new WeatherTestCase("weather_sample_2.csv", 2));
 
         return testCases.stream().map(testCase -> DynamicTest.dynamicTest(testCase.getFile(), () -> {
             Day day = App.getDayWithSmallestTempSpread(App.readWeatherData(testCase.getFile()));
             assertEquals(testCase.getExpected(), day.getNumber());
         }));
     }
+
+    @TestFactory
+    Stream<DynamicTest> footballCsvTests() {
+        List<FootballTestCase> testCases = Arrays.asList(
+                new FootballTestCase("football.csv", "Aston_Villa"),
+                new FootballTestCase("football_sample_2.csv", "Liverpool"));
+
+        return testCases.stream().map(testCase -> DynamicTest.dynamicTest(testCase.getFile(), () -> {
+            FootballResult result = App
+                    .getFootballResultWithSmallestGoalDifference(App.readFootballData(testCase.getFile()));
+            assertEquals(testCase.getExpected(), result.getTeam());
+        }));
+    }
 }
 
 /**
- * This is a tiny class to hold information about a test case. I like it to have
+ * This is a tiny class to hold information about a weather test case. I like it
+ * to have
  * multiple chunks of sample data in a format which is consumed by the
  * application (in this case csv). So it's probably more an integration test
  * than a unit test. But
@@ -38,11 +52,33 @@ class AppTest {
  */
 class WeatherTestCase {
     private String file;
-    private String expected;
+    private int expected;
 
-    WeatherTestCase(String file, String expected) {
+    WeatherTestCase(String file, int expected) {
         this.file = file;
         this.expected = expected;
+    }
+
+    String getFile() {
+        return this.file;
+    }
+
+    int getExpected() {
+        return this.expected;
+    }
+}
+
+/**
+ * Just like the {@link WeatherTestCase} this class encapsulates a test case for
+ * the football use case.
+ */
+class FootballTestCase {
+    private String file;
+    private String expected;
+
+    FootballTestCase(String file, String expectedTeam) {
+        this.file = file;
+        this.expected = expectedTeam;
     }
 
     String getFile() {
