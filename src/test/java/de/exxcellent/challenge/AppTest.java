@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DynamicTest;
@@ -31,8 +32,8 @@ class AppTest {
         return testCases.stream().map(testCase -> DynamicTest.dynamicTest(testCase.getFile(), () -> {
             WeatherAnalyzer analyzer = new WeatherAnalyzer(
                     new WeatherCsvReader(App.class.getResourceAsStream(testCase.getFile())));
-            Day day = analyzer.getDayWithSmallestTempSpread();
-            assertEquals(testCase.getExpected(), day.getNumber());
+            Optional<Day> day = analyzer.getDayWithSmallestTempSpread();
+            assertEquals(testCase.getExpected(), day.orElseThrow().getNumber());
         }));
     }
 
@@ -45,8 +46,8 @@ class AppTest {
         return testCases.stream().map(testCase -> DynamicTest.dynamicTest(testCase.getFile(), () -> {
             FootballResultsAnalyzer analyzer = new FootballResultsAnalyzer(
                     new FootballCsvReader(App.class.getResourceAsStream(testCase.getFile())));
-            FootballResult result = analyzer.getFootballResultWithSmallestGoalDifference();
-            assertEquals(testCase.getExpected(), result.getTeam());
+            Optional<FootballResult> result = analyzer.getFootballResultWithSmallestGoalDifference();
+            assertEquals(testCase.getExpected(), result.orElseThrow().getTeam());
         }));
     }
 }

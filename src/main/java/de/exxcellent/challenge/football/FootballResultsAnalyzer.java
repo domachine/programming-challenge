@@ -1,7 +1,7 @@
 package de.exxcellent.challenge.football;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Optional;
 
 public class FootballResultsAnalyzer {
     private FootballReader reader;
@@ -17,13 +17,13 @@ public class FootballResultsAnalyzer {
      * @return
      * @throws IOException
      */
-    public FootballResult getFootballResultWithSmallestGoalDifference() throws IOException {
-        List<FootballResult> footballData = reader.readFootballData();
-
-        return footballData.stream().reduce(
+    public Optional<FootballResult> getFootballResultWithSmallestGoalDifference() throws IOException {
+        FootballResult nullableResult = reader.readFootballData().stream().reduce(
                 null,
                 (minResult, result) -> minResult == null || result.getDistance() < minResult.getDistance()
                         ? result
                         : minResult);
+
+        return Optional.ofNullable(nullableResult);
     }
 }
